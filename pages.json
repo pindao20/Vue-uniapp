@@ -3,10 +3,34 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "联系上报"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/summary/summary",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "统计",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#007AFF",
+		"borderStyle": "black",
+		"backgroundColor": "#F8F8F8",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"text": "联系上报"
+			},
+			{
+				"pagePath": "pages/summary/summary",
+				"text": "统计"
+			}
+		]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
