@@ -62,7 +62,23 @@
 				otherSymptoms: this.$store.state.otherSymptoms,
 				placeReport: placeReports
 			};
+		},
+		onShow(){
+			this.initPageData();
+		},
+		methods:{
+			initPageData(){
+				let placeReports: Array<PlaceReport>;
+				placeReports = this.$store.getters.summarizeByPlace;
+				this.current= new Date(),
+				this.reportCount= this.$store.state.reportCount,
+				this.healthy= this.$store.state.healthy,
+				this.fever= this.$store.state.fever,
+				this.otherSymptoms= this.$store.state.otherSymptoms,
+				this.placeReport= placeReports
+			}
 		}
+		
 	}
 </script>
 
