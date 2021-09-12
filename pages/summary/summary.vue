@@ -7,7 +7,7 @@
 			<view class="text-area uni-padding-wrap  uni-center">
 				<text class="uni-text-small">今日共{{reportCount}}人上报健康状态</text>
 			</view>
-			<view class="uni-column ">
+			<view class="content">
 				<view class="uni-badge">
 					<text class="uni-bold uni-text">{{healthy}}</text>
 					<view class="uni-text-small">健康</view>
@@ -52,7 +52,7 @@
 	
 	export default {
 		data() {
-			var placeReports: Array<PlaceReport>;
+			let placeReports: Array<PlaceReport>;
 			placeReports = this.$store.getters.summarizeByPlace;
 			return {
 				current: new Date(), 

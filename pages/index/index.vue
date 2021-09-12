@@ -1,15 +1,17 @@
 <template>
-	<view class="content">
-		<view class="uni-flex">
-			<view class="icon-image">
-				<image style="width: 20px; height: 20px; background-color: #eeeeee;" :mode="scaleToFill" src="../../static/ym.jpeg"></image>
-			</view>
-			<view class="text-area">
-				<text class=" uni-label ">{{name}}</text>
+	<view >
+		<view class="content">
+			<view class="uni-flex">
+				<view class="icon-image">
+					<image style="width: 20px; height: 20px; background-color: #eeeeee;" :mode="scaleToFill" src="../../static/ym.jpeg"></image>
+				</view>
+				<view class="text-area">
+					<text class=" uni-label ">{{name}}</text>
+				</view>
 			</view>
 		</view>
 		<view class="uni-padding-wrap uni-common-mt">
-			<button type=" primary ">今日健康上报</button>
+			<button type="primary" @click="goReportPage()">今日健康上报</button>
 		</view>
 		
 		<view class="text-area">
@@ -52,7 +54,12 @@
 
 		},
 		methods: {
-
+			goReportPage(){
+				const url = "/pages/health-report/health-report";
+				uni.navigateTo({
+					url: url
+				})
+			}
 		}
 	}
 </script>

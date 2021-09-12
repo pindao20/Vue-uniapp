@@ -1,15 +1,16 @@
 import { createStore } from 'vuex'
 const store = createStore({
 	state: {
-		reportCount: 4,
-		healthy: 2,
+		reportCount: 5,
+		healthy: 3,
 		fever: 1,
 		otherSymptoms: 1,
 		reportList:[
-					{status:'healthy',trip:'in_dorm',place:['主教学楼','第二食堂']},
-					{status:'healthy',trip:'in_dorm',place:['艺术学院','第二食堂']},
-					{status:'fever',trip:'in_dorm',place:['艺术学院','7号寝室','其他']},
-					{status:'cough',trip:'in_dorm',place:['7号寝室','第二食堂','其他']}
+					{status:'healthy',trip:'out_dorm',place:['主教学楼','第二食堂']},
+					{status:'healthy',trip:'out_dorm',place:['艺术学院','第二食堂']},
+					{status:'fever',trip:'out_dorm',place:['艺术学院','7号寝室','其他']},
+					{status:'cough',trip:'out_dorm',place:['7号寝室','第二食堂','其他']},
+					{status:'healthy',trip:'in_dorm',place:[]}
 				   ]
 	},
 	mutations: {
@@ -20,11 +21,13 @@ const store = createStore({
 				trip: reportItem.trip,
 				place: reportItem.place
 			});
-			var h_n = reportItem.filter(r => x.status === 'healthy').length;
-			var f_n = reportItem.filter(r => x.status === 'fever').length;
+			let h_n = 0;
+			let f_n = 0;
+			reportItem.status == 'healthy'? h_n++ :h_n;
+			reportItem.status == 'fever'? f_n++ :f_n;
 			state.healthy += h_n;
 			state.fever += f_n;
-			state.otherSymptoms += reportItem.length -h_n -f_n;
+			state.otherSymptoms += ((h_n + f_n) === 0 ? 1 :0);
 		}
 	},
 	getters: {
