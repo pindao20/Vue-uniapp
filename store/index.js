@@ -1,126 +1,82 @@
 import { createStore } from 'vuex'
 const store = createStore({
 	state: {
-		reportCount: 0,
-		healthy: 0,
-		fever: 0,
-		otherSymptoms: 0,
+		reportCount: 4,
+		healthy: 2,
+		fever: 1,
+		otherSymptoms: 1,
 		reportList:[
 					{status:'healthy',trip:'in_dorm',place:['主教学楼','第二食堂']},
 					{status:'healthy',trip:'in_dorm',place:['艺术学院','第二食堂']},
 					{status:'fever',trip:'in_dorm',place:['艺术学院','7号寝室','其他']},
 					{status:'cough',trip:'in_dorm',place:['7号寝室','第二食堂','其他']}
 				   ]
-		testvuex: false,
-		colorIndex: 0,
-		colorList: ['#FF0000', '#00FF00', '#0000FF'],
-		noMatchLeftWindow: true,
-		active: 'componentPage',
-		leftWinActive: '/pages/component/view/view',
-		activeOpen: '',
-		menu: [],
-		univerifyErrorMsg: ''
 	},
 	mutations: {
-		login(state, provider) {
-			state.hasLogin = true;
-			state.loginProvider = provider;
-		},
-		logout(state) {
-			state.hasLogin = false
-			state.openid = null
-		},
-		setOpenid(state, openid) {
-			state.openid = openid
-		},
-		setTestTrue(state) {
-			state.testvuex = true
-		},
-		setTestFalse(state) {
-			state.testvuex = false
-		},
-		setColorIndex(state, index) {
-			state.colorIndex = index
-		},
-		setMatchLeftWindow(state, matchLeftWindow) {
-			state.noMatchLeftWindow = !matchLeftWindow
-		},
-		setActive(state, tabPage) {
-			state.active = tabPage
-		},
-		setLeftWinActive(state, leftWinActive) {
-			state.leftWinActive = leftWinActive
-		},
-		setActiveOpen(state, activeOpen) {
-			state.activeOpen = activeOpen
-		},
-		setMenu(state, menu) {
-			state.menu = menu
-		},
-		setUniverifyLogin(state, payload) {
-			typeof payload !== 'boolean' ? payload = !!payload : '';
-			state.isUniverifyLogin = payload;
-		},
-		setUniverifyErrorMsg(state,payload = ''){
-			state.univerifyErrorMsg = payload
+		report(state, reportItem) {
+			state.reportCount ++;
+			state.reportList.push({
+				status: reportItem.status,
+				trip: reportItem.trip,
+				place: reportItem.place
+			});
+			var h_n = reportItem.filter(r => x.status === 'healthy').length;
+			var f_n = reportItem.filter(r => x.status === 'fever').length;
+			state.healthy += h_n;
+			state.fever += f_n;
+			state.otherSymptoms += reportItem.length -h_n -f_n;
 		}
 	},
 	getters: {
-		currentColor(state) {
-			return state.colorList[state.colorIndex]
+		summarizeByPlace: (state, getters) => {
+			var placeReport = new Array;
+			getters.getPlaceList.filter(item => {
+				let healtHyCount = 0;
+				let feverCount = 0;
+				let otherCount = 0;
+				for(let r =0; r< state.reportList.length;r ++)
+				{
+					if(state.reportList[r].place.some(p => p===item) 
+						&& state.reportList[r].status === 'healthy')
+					{
+						healtHyCount++;
+						
+					}
+					else if(state.reportList[r].place.some(p => p===item) 
+						&& state.reportList[r].status === 'fever')
+					{
+						feverCount++;
+					}
+					else if(state.reportList[r].place.some(p => p===item))
+					{
+						otherCount++;
+					}
+					
+				}
+				placeReport.push({place: item, healthy: healtHyCount, fever:feverCount, other:otherCount});
+			})
+			return placeReport;
+		},
+		getPlaceList: state => {
+			var placeList = new Array();
+			for(let i =0; i< state.reportList.length; i++){
+				let rItem = state.reportList[i];
+				let place = rItem.place;
+				 for(let j=0; j< place.length;j++)
+				{
+					let item = place[j];
+					if(!placeList.some(p => p === item))
+					{
+						placeList.push(item);
+					}
+				}
+			}
+			return placeList;
 		}
+		
+		
 	},
 	actions: {
-		// lazy loading openid
-		getUserOpenId: async function({
-			commit,
-			state
-		}) {
-			return await new Promise((resolve, reject) => {
-				if (state.openid) {
-					resolve(state.openid)
-				} else {
-					uni.login({
-						success: (data) => {
-							commit('login')
-							setTimeout(function() { //模拟异步请求服务器获取 openid
-								const openid = '123456789'
-								console.log('uni.request mock openid[' + openid + ']');
-								commit('setOpenid', openid)
-								resolve(openid)
-							}, 1000)
-						},
-						fail: (err) => {
-							console.log('uni.login 接口调用失败，将无法正常使用开放接口等服务', err)
-							reject(err)
-						}
-					})
-				}
-			})
-		},
-		getPhoneNumber: function({
-			commit
-		}, univerifyInfo) {
-			return new Promise((resolve, reject) => {
-				uni.request({
-					url: 'https://97fca9f2-41f6-449f-a35e-3f135d4c3875.bspapp.com/http/univerify-login',
-					method: 'POST',
-					data: univerifyInfo,
-					success: (res) => {
-						const data = res.data
-						if (data.success) {
-							resolve(data.phoneNumber)
-						} else {
-							reject(res)
-						}
-
-					},
-					fail: (err) => {
-						reject(res)
-					}
-				})
-			})
-		}
 	}
 })
 
