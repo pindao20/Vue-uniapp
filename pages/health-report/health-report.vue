@@ -97,6 +97,24 @@
 						url:'/pages/index/index'
 					});
 				})
+				
+				console.log(this.$store.state.summaryId);
+				
+				wx.cloud.callFunction({
+					name: 'healthReport',
+					data: {
+						type: 'updateSummary',
+						data: {
+							id: this.$store.state.summaryId,
+							type: this.healthyChecked
+						}
+					}
+					
+				}).then((res) => {
+					uni.switchTab({
+						url:'/pages/index/index'
+					});
+				})
 			},
 			healthSelected(evt){
 				this.healthyChecked = evt.detail.value;

@@ -51,7 +51,21 @@
 			}
 		},
 		onLoad() {
-
+			let summary: Summary;
+			wx.cloud.callFunction({
+				name: 'healthReport',
+				data: {
+					type: 'getSummary'
+				}
+				
+			}).then((res) => {
+				summary = res.result.data[0];
+				this.$store.commit('updateSummaryId', summary._id);
+				this.reportCount= summary.reportCount;
+				this.healthy= summary.statusSummary.healthy;
+				this.fever= summary.statusSummary.fever;
+				this.otherSymptoms= summary.statusSummary.otherSymptoms
+			})
 		},
 		methods: {
 			goReportPage(){
@@ -70,15 +84,6 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
 	}
 
 	.text-area {

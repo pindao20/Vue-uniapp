@@ -11,7 +11,8 @@ const store = createStore({
 					{status:'fever',trip:'out_dorm',place:['艺术学院','7号寝室','其他']},
 					{status:'cough',trip:'out_dorm',place:['7号寝室','第二食堂','其他']},
 					{status:'healthy',trip:'in_dorm',place:[]}
-				   ]
+				   ],
+		summaryId: ''
 	},
 	mutations: {
 		report(state, reportItem) {
@@ -31,7 +32,16 @@ const store = createStore({
 		},
 		
 		refreshReport(state, list){
-			state.reportList = list;
+			state.reportList.splice(0,state.reportList.length);
+			
+			list.forEach((item) => {state.reportList.push({status: item.status,
+			 trip: item.trip, 
+			 place: item.place} )});
+			console.log(state.reportList);
+		},
+		
+		updateSummaryId(state, summaryId){
+			state.summaryId = summaryId;
 		}
 	},
 	getters: {
@@ -69,14 +79,18 @@ const store = createStore({
 			for(let i =0; i< state.reportList.length; i++){
 				let rItem = state.reportList[i];
 				let place = rItem.place;
-				 for(let j=0; j< place.length;j++)
+				if(Array.isArray(place))
 				{
-					let item = place[j];
-					if(!placeList.some(p => p === item))
+					for(let j=0; j< place.length;j++)
 					{
-						placeList.push(item);
+						let item = place[j];
+						if(!placeList.some(p => p === item))
+						{
+							placeList.push(item);
+						}
 					}
 				}
+				 
 			}
 			return placeList;
 		}

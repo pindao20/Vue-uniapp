@@ -12,7 +12,7 @@ exports.main = async (event, context) => {
       data: {
           status: event.data.status,
           trip: event.data.trip,
-          place: event.data.place
+          place: Array.isArray(event.data.place)?event.data.place:[]
       },
       success: function(res){
       }
