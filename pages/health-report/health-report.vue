@@ -73,14 +73,30 @@
 		},
 		methods:{
 			report(){
-				this.$store.commit('report',{
-					status: this.healthyChecked,
-					trip: this.tripChecked,
-					place: this.placeChecked
-				});
-				uni.switchTab({
-					url:'/pages/index/index'
-				});
+				// this.$store.commit('report',{
+				// 	status: this.healthyChecked,
+				// 	trip: this.tripChecked,
+				// 	place: this.placeChecked
+				// });
+				// uni.switchTab({
+				// 	url:'/pages/index/index'
+				// });
+				wx.cloud.callFunction({
+					name: 'healthReport',
+					data: {
+						type: 'pushNewReport',
+						data: {
+							status: this.healthyChecked,
+							trip: this.tripChecked,
+							place: this.placeChecked
+						}
+					}
+					
+				}).then((res) => {
+					uni.switchTab({
+						url:'/pages/index/index'
+					});
+				})
 			},
 			healthSelected(evt){
 				this.healthyChecked = evt.detail.value;

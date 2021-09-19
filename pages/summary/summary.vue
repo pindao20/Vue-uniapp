@@ -50,10 +50,20 @@
 		other: 0
 	}
 	
+	interface Summary
+	{
+		reportCount: number,
+		healthStatus: [{healthy: 0}, {fever:0}, {otherSymptoms:0}],
+	}
+	
 	export default {
 		data() {
+			
+			this.getSummary();
+			
 			let placeReports: Array<PlaceReport>;
 			placeReports = this.$store.getters.summarizeByPlace;
+			
 			return {
 				current: new Date(), 
 				reportCount: this.$store.state.reportCount,
@@ -68,14 +78,41 @@
 		},
 		methods:{
 			initPageData(){
+				this.getSummary();
 				let placeReports: Array<PlaceReport>;
 				placeReports = this.$store.getters.summarizeByPlace;
 				this.current= new Date(),
-				this.reportCount= this.$store.state.reportCount,
-				this.healthy= this.$store.state.healthy,
-				this.fever= this.$store.state.fever,
-				this.otherSymptoms= this.$store.state.otherSymptoms,
 				this.placeReport= placeReports
+			},
+			
+			getSummary(){
+				let summary: Summary;
+				wx.cloud.callFunction({
+					name: 'healthReport',
+					data: {
+						type: 'getSummary'
+					}
+					
+				}).then((res) => {
+					summary = res.result.data[0];
+					this.reportCount= summary.reportCount;
+					this.healthy= summary.statusSummary.healthy;
+					this.fever= summary.statusSummary.fever;
+					this.otherSymptoms= summary.statusSummary.otherSymptoms
+				})
+			},
+			
+			getPlaceSummary(){
+				wx.cloud.callFunction({
+					name: 'healthReport',
+					data: {
+						type: 'getReportList'
+					}
+					
+				}).then((res) => {
+					this.$store.commit('refreshReport', res.result.data[0]);
+					this.placeReport = this.$store.getters.summarizeByPlace;
+				})
 			}
 		}
 		

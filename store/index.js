@@ -28,6 +28,10 @@ const store = createStore({
 			state.healthy += h_n;
 			state.fever += f_n;
 			state.otherSymptoms += ((h_n + f_n) === 0 ? 1 :0);
+		},
+		
+		refreshReport(state, list){
+			state.reportList = list;
 		}
 	},
 	getters: {
